@@ -1,0 +1,30 @@
+#include <string>
+#include <vector>
+#include <algorithm>
+
+using namespace std;
+
+int solution(int n, vector<int> lost, vector<int> reserve) {
+    int i=0;
+    while(i<lost.size()){
+        auto iter=find(reserve.begin(),reserve.end(), lost[i]);
+        if(iter!=reserve.end()){
+            reserve.erase(iter);
+            lost.erase(lost.begin()+i);
+            continue;
+        }
+        i++;
+    }
+    i=0;
+    while(i<lost.size()){
+        auto iter=find(reserve.begin(),reserve.end(), lost[i]-1);
+        if(iter==reserve.end()) iter=find(reserve.begin(),reserve.end(), lost[i]+1);
+        if(iter!=reserve.end()){
+            reserve.erase(iter);
+            lost.erase(lost.begin()+i);
+            continue;
+        }
+        i++;
+    }
+    return n-lost.size();
+}
