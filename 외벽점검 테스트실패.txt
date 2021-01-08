@@ -1,0 +1,38 @@
+#include <string>
+#include <vector>
+#include <algorithm>
+
+
+using namespace std;
+int solution(int n, vector<int> weak, vector<int> v) {
+    //v:속도로 생각
+    int size=weak.size();
+    int answer = -1;
+    sort(v.begin(), v.end());
+    
+    for(int i=0;i<size;i++){
+        int tmp=weak[0];
+        for(int j=1;j<size;j++){
+            weak[j-1]=weak[j];
+        }
+        weak[size-1]=tmp+n;
+        while(1){
+            int w=0, d=0;
+            for(d=0;d<v.size();d++){
+                int len=weak[w]+v[d];
+                while(len>weak[w]){
+                    w++;
+                    if(w==size-1) break;
+                }
+                if(w==size-1) break;
+
+            }
+            if(w==size-1) 
+                if(answer==-1||answer>d) answer=d+1;
+            if(!next_permutation(v.begin(),v.end())) break;
+
+        }
+        
+    }
+    return answer;
+}

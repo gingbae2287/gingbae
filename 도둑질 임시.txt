@@ -1,0 +1,29 @@
+#include <string>
+#include <vector>
+#include <queue>
+
+using namespace std;
+
+int solution(vector<int> money) {
+    int answer = 0;
+    int size=money.size();
+    vector<int> sum(size);
+    for(int a=0;a<3;a++){
+        for(int i=0;i<sum.size();i++) sum[i]=0;
+        sum[0]=money[0];
+        for(int i=0;i<sum.size()-3;i++){
+            if(sum[i]==0) continue;
+            if(i+2<size-1)
+                if(sum[i+2]<sum[i]+money[i+2]) sum[i+2]=sum[i]+money[i+2];
+            if(i+3<size-1) {
+                if(sum[i+3]<sum[i]+money[i+3]) sum[i+3]=sum[i]+money[i+3];
+            }
+        }
+        money.push_back(money[0]);
+        money.erase(money.begin());
+        if(sum[size-2]>answer) answer=sum[size-2]; 
+        if(sum[size-3]>answer) answer=sum[size-3]; 
+    }
+    
+    return answer;
+}

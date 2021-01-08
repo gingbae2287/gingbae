@@ -1,0 +1,65 @@
+0 3 8 15 17 24 25
+
+0 3 8  17  25
+ 3 5  9  8
+n=3
+
+1) rock 정렬
+2) 시작, 끝점  rock에 추가
+
+각 바위사이 거리 vector d 추가?
+- i, i+1 사이 거리는 d[i]
+
+
+
+rock: 0 2 11 14 17 21 25
+ d:    2 9  3  3  4  4
+
+d원소 값도 1~100000000이라 생각
+
+
+-----------------------
+
+d에서 매번 최솟값 찾아서-> 최악 50000!
+양 쪽 거리중 작은값이랑 합함.
+
+d와 index를 pair로 저장한 배열 따로만든후 정렬 -> dp
+
+dp.second =idx 
+
+idx=
+
+
+
+----임시=-----
+
+#include <string>
+#include <vector>
+#include <algorithm>
+
+using namespace std;
+
+bool cmp(pair<int,int> a, pair<int,int> b){
+    return a.first<b.first;
+}
+
+int solution(int dis, vector<int> r, int n) {
+    int answer = 0;
+    vector<int> d(r.size()-1);
+    vector<pair<int, int>> dp(r.size()-1);
+    sort(r.begin(), r.end());
+    for(int i=1;i<r.size();i++) {
+        int dd=r[i]-r[i-1];
+        d[i-1]=dd;
+        dp[i-1]=make_pair(dd,i-1);
+    }
+    
+    sort(dp.begin(), dp.end(), cmp);
+    for(int i=0;i<n;i++){
+        int dd=dp[i].first;
+        int idx=dp[i].second;
+    }
+    
+    
+    return answer;
+}

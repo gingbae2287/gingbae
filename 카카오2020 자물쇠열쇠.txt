@@ -1,0 +1,46 @@
+#include <string>
+#include <vector>
+#include <algorithm>
+using namespace std;
+
+bool comp(pair<int, int> a, pair<int, int> b) {
+	if (a.first == b.first) return a.second < b.second;
+	else return a.first < b.first;
+}
+
+bool solution(vector<vector<int>> key, vector<vector<int>> lock) {
+	vector<pair<int, int>> k, sol, tmp;
+	int M = key.size();
+	int N = lock.size();
+	for (int i = 0; i < M; i++)
+		for (int j = 0; j < M; j++)
+			if (key[i][j] == 1) k.push_back(make_pair(i, j));
+	for (int i = 0; i < N; i++)
+		for (int j = 0; j < N; j++)
+			if (lock[i][j] == 0) sol.push_back(make_pair(i, j));
+
+	sort(sol.begin(), sol.end(), comp);
+
+	for (int turn = 0; turn < 4; turn++) {
+		for (int i = (1 - M); i < N; i++)
+			for (int j = (1 - M); j < N; j++) {
+				tmp.clear();
+				int x=0, y=0;
+				for (int q=0;q<k.size();q++) {
+					x = k[q].first + i;
+					y = k[q].second + j;
+					if (x >= 0 && x < N && y >= 0 && y < N)  tmp.push_back(make_pair(x, y));
+				}
+				sort(tmp.begin(), tmp.end(), comp);
+				if (sol==tmp) return true;
+				
+			}
+
+		for (int i = 0; i < k.size(); i++) {    //회전
+			k[i] = make_pair(k[i].second, M - 1 - k[i].first);
+		}
+
+	}
+
+	return false;
+}
