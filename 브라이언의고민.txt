@@ -1,0 +1,117 @@
+/*예외케이스 찾는데 애먹음
+aa 나 aaA 같이 소문자두개만 붙어있으면 invalid 떠야하고
+입력에 공백있어도 invalid떠야함
+처음접근: 소문자를 발견하고 그다음 같은 소문자의 위치를 보고 어떤 규칙이 적용됐는지 파악하려했으나 복잡했다. 또 AaAaA 같이 규칙1,2가 다 적용될 수 있는 문자는 어떤식으로 처리할지 고민했고 그냥 규칙 2로 적용해버리는게 더 안전? 했다. 저런 케이스를 규칙2로 정해버리니 소문자의 개수로 어떤규칙인지 판별할 수 있어서 편하게 풀어나감*/
+
+#include <string>
+
+using namespace std;
+bool issmall(char a);
+string make_word(string a);
+
+// 전역 변수를 정의할 경우 함수 내에 초기화 코드를 꼭 작성해주세요.
+string solution(string sentence) {
+    bool vis[26];
+    for(int i=0;i<26;i++) vis[i]=false;
+    string answer = "";
+    
+    int size=sentence.size();
+    int now=0;
+    ////////
+    for(int i=0;i<size;i++){
+        if(sentence[i]==' ') return "invalid";
+        if(issmall(sentence[i]))
+        {
+            int count=1;
+            char a=sentence[i];
+            if(vis[a-'a']==true) return "invalid";
+            if(i==size-1) return "invalid";
+            //소문자가 마지막자리에만 위치 =invalid
+            int idx=i;
+            while(idx+1<size){
+                int tmpidx=sentence.find(a,idx+1);
+                if(tmpidx==-1) break;
+                idx=tmpidx;
+                count++;
+                
+            }
+            
+            //규칙2
+            if(count==2){
+                //같은 소문자가 없으면 invalid
+                if(idx==-1) return "invalid";
+                string tmp;
+                if(i>now){ //소문자 전까지 한단어
+                    tmp=sentence.substr(now,i-now);
+                    answer+=" ";
+                    answer+=tmp;
+                }
+                tmp=sentence.substr(i+1,idx-i-1);
+                if (tmp == "") return "invalid";
+                //now+1부터 idx-1까지 한단어.
+                //단어 사이 체크 넣기
+                char tmpchar='0';
+                for(int j=0;j<tmp.size();j++){
+                    if(issmall(tmp[j]))
+                    {
+                        if(j%2==0) return "invalid";
+                        else{
+                            if(tmpchar=='0') {
+                                tmpchar=tmp[j];
+                                vis[tmpchar-'a']=true;
+                            }
+                            else if(tmpchar!=tmp[j]) return "invalid";
+                        }
+                    }
+                }
+                answer+=" ";
+                answer+=make_word(tmp);
+                now=idx+1;
+                i=idx;
+            }
+            //규칙1
+            else {
+                string tmp;
+                //i-1전에 있는 대문자들 한단어 push
+                if(i-1>now){
+                    tmp=sentence.substr(now,i-1-now);
+                    answer+=" ";
+                    answer+=tmp;
+                }
+                if(i<=now) return "invalid";
+                if(idx==size-1) return "invalid";
+                if(idx==-1) idx=i;
+                tmp=sentence.substr(i-1,idx-i+3);
+                for(int j=0;j<tmp.size();j+=2){
+                    if(issmall(tmp[j])) return "invalid";
+                }
+                for(int j=1;j<tmp.size();j+=2){
+                    if(a!=tmp[j]) return "invalid";
+                }
+                answer+=" ";
+                answer+=make_word(tmp);
+                now=idx+2;
+                i=idx+1;
+            }
+            vis[a-'a']=true;
+        }
+    }
+    if(now<size){
+        answer+=" ";
+        answer+=sentence.substr(now,size-now);
+    }
+    answer.erase(answer.begin());
+    return answer;
+}
+
+bool issmall(char a){
+    return (a>='a'&& a<='z');
+}
+
+string make_word(string a){
+    string tmp="";
+    for(int i=0;i<a.size();i++){
+        if(!issmall(a[i])) tmp+=a[i];
+    }
+    return tmp;
+}
